@@ -1,9 +1,9 @@
 <?php
 /**
- * @version    $Id: myauth.php 7180 2007-04-23 16:51:53Z jinx $
+ * @version    $Id: wowacc.php 2014-10-01 16:51:53Z Flying Dutchman $
  * @package    Joomla.Tutorials
  * @subpackage Plugins
- * @license    GNU/GPL
+ * @license    GNU/GPL 
  */
  
 // Check to ensure this file is included in Joomla!
