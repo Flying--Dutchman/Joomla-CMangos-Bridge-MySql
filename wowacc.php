@@ -152,7 +152,15 @@ class plgUserWowacc extends JPlugin
 			}
 			
 			$db->setQuery($query); 
-			$db->execute();
+			//Try-Catch, otherwise the site can't be loaded when there is an error (like missing priviliges).
+			try {
+				$db->execute();
+			}
+			catch (Exception $e) {
+				//Well, that sucks...
+				JFactory::getApplication()->enqueueMessage("User was not changed/created in the WoW-Database! SQL-Error!");
+				return false;
+			}
 			
 			//Block, Delete user?
 			if (($this->params->get('joomlablock') == 'on') && $user['block'] ) {
@@ -165,7 +173,15 @@ class plgUserWowacc extends JPlugin
 					->set(array($db->quoteName('locked') . "='0'"))
 					->where(array($db->quoteName('username') . '=' . "'" . $user['username'] . "'")); 
 				$db->setQuery($query); 
-				$db->execute();	
+				//Try-Catch, otherwise the site can't be loaded when there is an error (like missing priviliges).
+				try {
+					$db->execute();
+				}
+				catch (Exception $e) {
+					//Well, that sucks...
+					JFactory::getApplication()->enqueueMessage("User lockstate was not changed in the WoW-Database! SQL-Error!");
+					return false;
+				}
 			}
 		}
     }
@@ -204,7 +220,15 @@ class plgUserWowacc extends JPlugin
 			}
 			
 			$db->setQuery($query); 
-			$db->execute();
+			//Try-Catch, otherwise the site can't be loaded when there is an error (like missing priviliges).
+			try {
+				$db->execute();
+			}
+			catch (Exception $e) {
+				//Well, that sucks...
+				JFactory::getApplication()->enqueueMessage("User was not changed/created in the WoW-Database! SQL-Error!");
+				return false;
+			}
 		}
 	}
 }
