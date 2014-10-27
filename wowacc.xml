@@ -52,6 +52,20 @@
 					<option
 						value="on">on</option>
 				</field>
+				<field name="wowexpansion" type="list" default="0" label="Used WoW Expansion." description="" filter="">
+					<option
+						value="0">Vanilla</option>
+					<option
+						value="1">The Burning Crusade</option>
+					<option
+						value="2">Wrath of the Lich King</option>
+					<option
+						value="3">Cataclysm</option>
+					<option
+						value="4">Mists of Pandaria</option>
+					<option
+						value="5">Warlords of Draenor</option>
+				</field>
 			</fieldset>
 		</fields>
 	</config>
