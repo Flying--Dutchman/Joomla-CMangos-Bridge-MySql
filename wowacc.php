@@ -19,7 +19,23 @@ class plgUserWowacc extends JPlugin
 		if (empty($pass)){
 			//empty so it comes directly from Joomla
 			$post_array = JFactory::getApplication()->input->get('jform', array(), 'ARRAY');
-			$pass = $post_array['password'];
+			if (empty($post_array['password'])) //Probably is
+			{
+				if (empty($post_array['password1'])) 
+				{//should not be!
+					$pass = $post_array['password1'];
+				}
+				else
+				{
+					JFactory::getApplication()->enqueueMessage("Unhashed password could not be found! User wasn't saved!");	
+					return false;
+				}
+					
+			}	
+			else
+			{
+				$pass = $post_array['password'];
+			}
 		}
 		//check if a new password was set
 		if ($user['password'] != $new['password']) {
