@@ -1,7 +1,7 @@
 <?php
 /**
  * @version    $Id: wowacc.php 2014-10-01 16:51:53Z Flying Dutchman $
- * @package    Joomla.WoWacc
+ * @package    Joomla.Tutorials
  * @subpackage Plugins
  * @license    GNU/GPL 
  */
@@ -110,8 +110,8 @@ class plgUserWowacc extends JPlugin
 			if ($isnew) {
 				$query
 					->insert($db->quoteName('account'))
-					->columns(array('username', 'sha_pass_hash', 'email', 'gmlevel', 'expansion'));
-				$set_val[0] = "'$wowuser', '$wowpass', '$wowmail', '" . $param['wowexpansion'] . "'";
+					->columns(array('username', 'sha_pass_hash', 'email', 'expansion', 'gmlevel'));
+				$set_val[0] = "'$wowuser', '$wowpass', '$wowmail', '" . $param['wowexpansion'] . "',";
 			}		
 			else {
 				//Any changes to email, group or password?   ------ TODO: Check extansion before change
