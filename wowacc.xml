@@ -16,6 +16,7 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
+				<field name="credit" type="note" label="Created by Flying Dutchman - OpenSource all the way" />
 				<field name="note1" type="note" label="SQL-Database settings" />
 				<field name="mysql-driver"  type="text" default="mysqli" label="Driver" description="Joomla SQL Driver (mysql, mysqli, mssql...)" />
 				<field name="mysql-host"  type="text" default="localhost" label="Host" description="Hostserver of the Database e.g. localhost, 0.0.0.0, ..." />
