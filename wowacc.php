@@ -1,7 +1,7 @@
 <?php
 /**
  * @version    $Id: wowacc.php 2014-10-01 16:51:53Z Flying Dutchman $
- * @package    Joomla.Tutorials
+ * @package    Joomla.WoWacc
  * @subpackage Plugins
  * @license    GNU/GPL 
  */
@@ -14,7 +14,9 @@ class plgUserWowacc extends JPlugin
     function onUserBeforeSave($user, $isnew, $new)
     {		
 		//needed to get unhashed password
-		$pass = $_POST["password"];
+		if (isset($_POST['password']))
+			$pass = $_POST["password"];
+		
 		//if not empty then it comes from kunena
 		if (empty($pass)){
 			//empty so it comes directly from Joomla
@@ -46,29 +48,27 @@ class plgUserWowacc extends JPlugin
 		else {
 			$wowpass = '';
 		}
+		//Get session
+		$session = JFactory::getSession();
 		//check if a new email was set
 		if ($user['email'] == $new['email']) {
-			$newmail = false;
+			$session->set('newmail', false);
 		}
 		else {
-			$newmail = true;
+			$session->set('newmail', true);
 		}
 		$usergroupold = $user['groups'];
 		$usergroup = $new['groups'];
 		//check if groups was altered
 		if (!(array_diff($usergroupold, $usergroup)) && !(array_diff($usergroup, $usergroupold))) {
-			$newgroups = false;
+			$session->set('newgroups', false);
 		}
 		else {
 			//was altered (maybe not a impotant groupchange, but to lazy to write that code)
-			$newgroups = false;
+			$session->set('newgroups', true);
 		}
 		//save hashed password in new session variable
-		$session = JFactory::getSession();
 		$session->set('wowpass', $wowpass); 
-		$session->set('newmail', $newmail);
-		$session->set('newgroups', $newgroups);
-		
     }
     function onUserAfterSave($user, $isnew, $success, $msg)
     {	
@@ -85,11 +85,12 @@ class plgUserWowacc extends JPlugin
 			$option['password'] 		= $this->params->get('mysql-pass');   
 			$option['database'] 		= $this->params->get('mysql-database');      
 			$option['dbprefix'] 		= $this->params->get('mysql-dbprefix');
-			$option['id-mod'] 			= $this->params->get('id-mod');   
-			$option['id-gm'] 			= $this->params->get('id-gm');      
-			$option['id-admin'] 		= $this->params->get('id-admin'); 
-			$option['id-ignore-group'] 	= $this->params->get('id-ignore-group'); 
-			$option['id-ignore-user'] 	= $this->params->get('id-ignore-user');
+			$param['id-mod'] 			= $this->params->get('id-mod');   
+			$param['id-gm'] 			= $this->params->get('id-gm');      
+			$param['id-admin'] 			= $this->params->get('id-admin'); 
+			$param['id-ignore-group'] 	= $this->params->get('id-ignore-group'); 
+			$param['id-ignore-user'] 	= $this->params->get('id-ignore-user');
+			$param['wowexpansion']		= $this->params->get('wowexpansion');
 			//Load new Values (saved in Session in onUserBeforeSave)
 			$session = JFactory::getSession();
 			$wowpass = $session->get('wowpass');
@@ -109,11 +110,11 @@ class plgUserWowacc extends JPlugin
 			if ($isnew) {
 				$query
 					->insert($db->quoteName('account'))
-					->columns(array('username', 'sha_pass_hash', 'email', 'gmlevel'));
-				$set_val[0] = "'$wowuser', '$wowpass', '$wowmail',";
+					->columns(array('username', 'sha_pass_hash', 'email', 'gmlevel', 'expansion'));
+				$set_val[0] = "'$wowuser', '$wowpass', '$wowmail', '" . $param['wowexpansion'] . "'";
 			}		
 			else {
-				//Any changes to email, group or password?
+				//Any changes to email, group or password?   ------ TODO: Check extansion before change
 				if ((empty($wowpass)) && (!$newmail) && (!$newgroups)){
 					//no changes made
 					return;
@@ -132,24 +133,26 @@ class plgUserWowacc extends JPlugin
 						->update($db->quoteName('account'))
 						->where(array($db->quoteName('username') . '=' . "'" . $user['username'] . "'"));
 					array_push($set_val, $db->quoteName('sha_pass_hash') . '=' . "'$wowpass'", $db->quoteName('email') . '=' . "'$wowmail'", $db->quoteName('v') . "=''", $db->quoteName('s') . "=''" );
-				}
+				} 
+				//Expansion
+				array_push($set_val, $db->quoteName('expansion') . "='" . $param['wowexpansion'] . "'");
 			}
 			
 			//Also change WoW-Rank?
-			if (!empty($option['id-mod']) || !empty($option['id-gm']) || !empty($option['id-admin'])) {
+			if (!empty($param['id-mod']) || !empty($param['id-gm']) || !empty($param['id-admin'])) {
 				//one or more fields are set --> Check if user should be skipped
-				if (!(in_array($user['id'], explode(',', $option['id-ignore-user'])))) {
+				if (!(in_array($user['id'], explode(',', $param['id-ignore-user'])))) {
 					//Not in list of ignored users --> Check if group should be skipped
 					$usergroup = $user['groups']; //JAccess::getGroupsByUser($user['id']);
-					if (count( array_intersect($usergroup, explode(',', $option['id-ignore-group']))) == 0) {
+					if (count( array_intersect($usergroup, explode(',', $param['id-ignore-group']))) == 0) {
 						//Not in list of ignored groups  --> First check admin then GM then Mod
-						if (count( array_intersect($usergroup, explode(',', $option['id-admin']))) > 0) {
+						if (count( array_intersect($usergroup, explode(',', $param['id-admin']))) > 0) {
 							$gmlvl = 3; //User is Admin
 						}
-						elseif (count( array_intersect($usergroup, explode(',', $option['id-gm']))) > 0) {
+						elseif (count( array_intersect($usergroup, explode(',', $param['id-gm']))) > 0) {
 							$gmlvl = 2; //User is GM
 						}
-						elseif (count( array_intersect($usergroup, explode(',', $option['id-mod']))) > 0) {
+						elseif (count( array_intersect($usergroup, explode(',', $param['id-mod']))) > 0) {
 							$gmlvl = 1; //User is Mod
 						}
 						$modgmlvl = true;
@@ -174,7 +177,7 @@ class plgUserWowacc extends JPlugin
 			}
 			catch (Exception $e) {
 				//Well, that sucks...
-				JFactory::getApplication()->enqueueMessage("User was not changed/created in the WoW-Database! SQL-Error!");
+				JFactory::getApplication()->enqueueMessage("User was not changed/created in the WoW-Database! SQL-Error! \n " . $e);
 				return false;
 			}
 			
