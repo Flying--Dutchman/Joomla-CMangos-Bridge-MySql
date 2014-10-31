@@ -98,7 +98,10 @@ class plgUserWowacc extends JPlugin
 			$newmail = $session->get('newmail');
 			$newgroups = $session->get('newgroups');
 			$wowmail = $user['email'];
-			$wowuser = $user['username'];
+			if ($this->params->get('uppername'))
+				$wowuser = strtoupper($user['username']);
+			else
+				$wowuser = $user['username'];
 			//Get Databasesession
 			$db = JDatabaseDriver::getInstance($option);  
 			$query = $db->getQuery(true);
@@ -125,14 +128,14 @@ class plgUserWowacc extends JPlugin
 					//password is empty, so password hasn't changed
 					$query
 						->update($db->quoteName('account')) 
-						->where(array($db->quoteName('username') . '=' . "'" . $user['username'] . "'"));  
+						->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'")));  
 					array_push($set_val, $db->quoteName('email') . '=' . "'$wowmail'");
 				}
 				else {
 					//password isn't empty, so password was altered
 					$query
 						->update($db->quoteName('account'))
-						->where(array($db->quoteName('username') . '=' . "'" . $user['username'] . "'"));
+						->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'")));
 					array_push($set_val, $db->quoteName('sha_pass_hash') . '=' . "'$wowpass'", $db->quoteName('email') . '=' . "'$wowmail'", $db->quoteName('v') . "=''", $db->quoteName('s') . "=''" );
 				} 
 				//Expansion
@@ -191,7 +194,7 @@ class plgUserWowacc extends JPlugin
 					->clear()
 					->update($db->quoteName('account')) 
 					->set(array($db->quoteName('locked') . "='0'"))
-					->where(array($db->quoteName('username') . '=' . "'" . $user['username'] . "'")); 
+					->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'")); 
 				$db->setQuery($query); 
 				//Try-Catch, otherwise the site can't be loaded when there is an error (like missing priviliges).
 				try {
@@ -215,7 +218,7 @@ class plgUserWowacc extends JPlugin
 		$option['password'] 		= $this->params->get('mysql-pass');   
 		$option['database'] 		= $this->params->get('mysql-database');      
 		$option['dbprefix'] 		= $this->params->get('mysql-dbprefix');
-		$option['lock'] 			= $this->params->get('wowlock');   
+		$option['lock'] 		= $this->params->get('wowlock');   
 
 		//Get Databasesession
 		$db = JDatabaseDriver::getInstance($option);  
@@ -227,12 +230,12 @@ class plgUserWowacc extends JPlugin
 				$query
 					->update($db->quoteName('account')) 
 					->set(array($db->quoteName('locked') . "='1'"))
-					->where(array($db->quoteName('username') . '=' . "'" . $user['username'] . "'"));  
+					->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'"));  
 			}
 			elseif ($option['delete'] == "delete") {
 				$query
 					->delete($db->quoteName('account'))
-					->where(array($db->quoteName('username') . '=' . "'" . $user['username'] . "'"));
+					->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'"));
 			}
 			else {
 				//Plausi
