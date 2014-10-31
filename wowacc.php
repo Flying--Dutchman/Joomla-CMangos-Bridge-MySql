@@ -15,7 +15,7 @@ class plgUserWowacc extends JPlugin
     {		
 		//check if Account allready exixst
 		//Get Databasesession checkuser	
-		if ($this->params->get('checkuser')){
+		if ($this->params->get('checkuser') && $isnew){
 			//Load settings
 			$option = array(); 
 			$option['driver']   		= $this->params->get('mysql-driver');          
@@ -27,12 +27,13 @@ class plgUserWowacc extends JPlugin
 			
 			$db = JDatabaseDriver::getInstance($option);  
 			$query = $db->getQuery(true);
-			$query->select('*')->from('account')->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'"));
+			$query->select('*')->from('account')->where('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($new['username']) . "'");
 			$db->setQuery($query); 
 			//Try-Catch, otherwise the site can't be loaded when there is an error (like missing priviliges).
+			JFactory::getApplication()->enqueueMessage((string)$query);
 			try {
 				$row = $db->loadRow();
-				if (!isset($row) || !empty($row) || is_null($row)){ //just to be damn sure
+				if (!is_null($row)){ //just to be damn sure
 					JFactory::getApplication()->enqueueMessage("Username already in use, please choose another one."); return false;
 				}
 			}
