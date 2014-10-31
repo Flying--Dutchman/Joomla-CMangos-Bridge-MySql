@@ -24,13 +24,19 @@
 				<field name="mysql-pass" type="password" default="secret" label="Password" description="SQL-Password" />
 				<field name="mysql-database"  type="text" default="realmd" label="Database" description="Databse of the Server" />
 				<field name="mysql-dbprefix"  type="text" default="" label="Tableprefix (optional)" description="" />
+				<field name="uppername" type="list" default="1" label="Save username with uppercases" description="Save username in uppercases to the DB. Yes is MaNGOS default." filter="">
+					<option
+						value="0">No</option>
+					<option
+						value="1">Yes</option>
+				</field>
 				<field name="note2" type="note" label="Change ingame-GM-level" />
 				<field name="note3" type="note" description="Leave fields blank to disable this option. If activated: READ DESCRIPTION by hovering over the label in front of the field." />
-				<field name="id-mod"  type="text" default="" label="Mod ID" description="ID's of the Joomlagroup of which players should become WoW-Mod. (sep. by ',')" />
-				<field name="id-gm"  type="text" default="" label="GM ID" description="ID's of the Joomlagroup of which players should become WoW-Gamemaster. (sep. by ',')" />
-				<field name="id-admin"  type="text" default="" label="Admin ID" description="ID's of the Joomlagroup of which players should become WoW-Administrator. (sep. by ',')" />
-				<field name="id-ignore-group"  type="text" default="" label="Group ignore ID" description="ID's of the Joomlagroup of which players should not become WoW-Mod/Gamemaster/Administrator. (sep. by ',')" />
-				<field name="id-ignore-user"  type="text" default="" label="User ignore ID" description="ID's of the Joomlagroup of which players should become also WoW-Mod. (sep. by ',')" />
+				<field name="id-mod"  type="text" default="" label="Mod ID" description="IDs of the Joomlagroup of which players should become WoW-Mod. (sep. by ,)" />
+				<field name="id-gm"  type="text" default="" label="GM ID" description="IDs of the Joomlagroup of which players should become WoW-Gamemaster. (sep. by ,)" />
+				<field name="id-admin"  type="text" default="" label="Admin ID" description="IDs of the Joomlagroup of which players should become WoW-Administrator. (sep. by ,)" />
+				<field name="id-ignore-group"  type="text" default="" label="Group ignore ID" description="IDs of the Joomlagroup of which players should not become WoW-Mod/Gamemaster/Administrator. (sep. by ,)" />
+				<field name="id-ignore-user"  type="text" default="" label="User ignore ID" description="IDs of the Joomlagroup of which players should become also WoW-Mod. (sep. by ,)" />
 				<field name="note4" type="note" label="Lock or delete WoW-Accounts" />
 				<field name="note5" type="note" description="CAUTION: Deleted WoW-Accounts can not be retrieved! " />
 				<field name="wowlock" type="list" default="nothing" label="Lock or Delete WoW-Account when a Joomla-Account gets deleted.                   " description="NOTHING = no changes made in WoW-DB. LOCK = Lock the user in WoW-DB. DELETE = Delete Account from the account table." filter="">
@@ -41,7 +47,7 @@
 					<option
 						value="delete">delete</option>
 				</field>
-				<field name="joomlablock" type="list" default="off" label="If set to 'on', the above setting will be used when a Joomla-Account gets blocked." description="CAUTION" filter="">
+				<field name="joomlablock" type="list" default="off" label="If set to on, the above setting will be used when a Joomla-Account gets blocked." description="CAUTION" filter="">
 					<option
 						value="off">off</option>
 					<option
