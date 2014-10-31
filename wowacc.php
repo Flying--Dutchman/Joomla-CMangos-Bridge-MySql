@@ -13,6 +13,34 @@ class plgUserWowacc extends JPlugin
 {
     function onUserBeforeSave($user, $isnew, $new)
     {		
+		//check if Account allready exixst
+		//Get Databasesession checkuser	
+		if ($this->params->get('checkuser')){
+			//Load settings
+			$option = array(); 
+			$option['driver']   		= $this->params->get('mysql-driver');          
+			$option['host']     		= $this->params->get('mysql-host');  
+			$option['user']     		= $this->params->get('mysql-user');       
+			$option['password'] 		= $this->params->get('mysql-pass');   
+			$option['database'] 		= $this->params->get('mysql-database');      
+			$option['dbprefix'] 		= $this->params->get('mysql-dbprefix');
+			
+			$db = JDatabaseDriver::getInstance($option);  
+			$query = $db->getQuery(true);
+			$query->select('*')->from('account')->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'"));
+			$db->setQuery($query); 
+			//Try-Catch, otherwise the site can't be loaded when there is an error (like missing priviliges).
+			try {
+				$row = $db->loadRow();
+				if (!isset($row) || !empty($row) || is_null($row)){ //just to be damn sure
+					JFactory::getApplication()->enqueueMessage("Username already in use, please choose another one."); return false;
+				}
+			}
+			catch (Exception $e) {
+				//Well, that sucks...
+				JFactory::getApplication()->enqueueMessage("User was not changed/created in the WoW-Database! SQL-Error! \n " . $e); return false;
+			}
+		}
 		//needed to get unhashed password
 		if (isset($_POST['password']))
 			$pass = $_POST["password"];
