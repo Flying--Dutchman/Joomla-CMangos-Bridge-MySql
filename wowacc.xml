@@ -30,6 +30,12 @@
 					<option
 						value="1">Yes</option>
 				</field>
+				<field name="checkuser" type="list" default="1" label="Abort if user exists" description="Checks if the WoW-Account already exists and aborts Account creation" filter="">
+					<option
+						value="0">No</option>
+					<option
+						value="1">Yes</option>
+				</field>
 				<field name="note2" type="note" label="Change ingame-GM-level" />
 				<field name="note3" type="note" description="Leave fields blank to disable this option. If activated: READ DESCRIPTION by hovering over the label in front of the field." />
 				<field name="id-mod"  type="text" default="" label="Mod ID" description="IDs of the Joomlagroup of which players should become WoW-Mod. (sep. by ,)" />
@@ -53,7 +59,7 @@
 					<option
 						value="on">on</option>
 				</field>
-				<field name="wowenable" type="list" default="on" label="If set to 'on', the WoW-Account gets unlocked when a Joomla-Account gets unblocked." description="" filter="">
+				<field name="wowenable" type="list" default="on" label="If set to on, the WoW-Account gets unlocked when a Joomla-Account gets unblocked." description="" filter="">
 					<option
 						value="off">off</option>
 					<option
