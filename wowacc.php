@@ -128,14 +128,14 @@ class plgUserWowacc extends JPlugin
 					//password is empty, so password hasn't changed
 					$query
 						->update($db->quoteName('account')) 
-						->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'")));  
+						->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'"));  
 					array_push($set_val, $db->quoteName('email') . '=' . "'$wowmail'");
 				}
 				else {
 					//password isn't empty, so password was altered
 					$query
 						->update($db->quoteName('account'))
-						->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'")));
+						->where(array('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($user['username']) . "'"));
 					array_push($set_val, $db->quoteName('sha_pass_hash') . '=' . "'$wowpass'", $db->quoteName('email') . '=' . "'$wowmail'", $db->quoteName('v') . "=''", $db->quoteName('s') . "=''" );
 				} 
 				//Expansion
