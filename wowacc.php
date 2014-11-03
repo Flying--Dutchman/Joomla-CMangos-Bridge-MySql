@@ -30,7 +30,6 @@ class plgUserWowacc extends JPlugin
 			$query->select('*')->from('account')->where('UPPER('.$db->quoteName('username') . ')=' . "'" . strtoupper($new['username']) . "'");
 			$db->setQuery($query); 
 			//Try-Catch, otherwise the site can't be loaded when there is an error (like missing priviliges).
-			JFactory::getApplication()->enqueueMessage((string)$query);
 			try {
 				$row = $db->loadRow();
 				if (!is_null($row)){ //just to be damn sure
@@ -50,7 +49,6 @@ class plgUserWowacc extends JPlugin
 		if (empty($pass)){
 			//empty so it comes directly from Joomla
 			$post_array = JFactory::getApplication()->input->get('jform', array(), 'ARRAY');
-			JFactory::getApplication()->enqueueMessage($post_array['password']);
 			if (!isset($post_array['password'])) //Probably is
 			{
 				if (isset($post_array['password1']))  
@@ -59,7 +57,7 @@ class plgUserWowacc extends JPlugin
 				}
 				else
 				{
-					JFactory::getApplication()->enqueueMessage($post_array['password1'] . " - Unhashed password could not be found! User wasn't saved!");	
+					JFactory::getApplication()->enqueueMessage("Unhashed password could not be found! User wasn't saved!");	
 					return false;
 				}
 					
