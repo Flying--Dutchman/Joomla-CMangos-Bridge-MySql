@@ -41,34 +41,34 @@ class plgUserWowacc extends JPlugin
 				JFactory::getApplication()->enqueueMessage("User was not changed/created in the WoW-Database! SQL-Error! \n " . $e); return false;
 			}
 		}
-		//needed to get unhashed password
-		if (isset($_POST['password']))
-			$pass = $_POST["password"];
-		
-		//if not empty then it comes from kunena
-		if (empty($pass)){
-			//empty so it comes directly from Joomla
-			$post_array = JFactory::getApplication()->input->get('jform', array(), 'ARRAY');
-			if (!isset($post_array['password'])) //Probably is
-			{
-				if (isset($post_array['password1']))  
-				{//should not be!
-					$pass = $post_array['password1'];
-				}
-				else
-				{
-					JFactory::getApplication()->enqueueMessage("Unhashed password could not be found! User wasn't saved!");	
-					return false;
-				}
-					
-			}	
-			else
-			{
-				$pass = $post_array['password'];
-			}
-		}
 		//check if a new password was set
 		if ($user['password'] != $new['password']) {
+			//needed to get unhashed password
+			if (isset($_POST['password']))
+				$pass = $_POST["password"];
+			
+			//if not empty then it comes from kunena
+			if (empty($pass)){
+				//empty so it comes directly from Joomla
+				$post_array = JFactory::getApplication()->input->get('jform', array(), 'ARRAY');
+				if (!isset($post_array['password'])) //Probably is
+				{
+					if (isset($post_array['password1']))  
+					{//should not be!
+						$pass = $post_array['password1'];
+					}
+					else
+					{
+						JFactory::getApplication()->enqueueMessage("Unhashed password could not be found! User wasn't saved!");	
+						return false;
+					}
+						
+				}	
+				else
+				{
+					$pass = $post_array['password'];
+				}
+			}
 			//new password --> encrypt it
 			$wowuser = $new['username'];  
 			$wowpass = sha1(strtoupper($wowuser . ":" . $pass));
@@ -94,6 +94,13 @@ class plgUserWowacc extends JPlugin
 		else {
 			//was altered (maybe not a impotant groupchange, but to lazy to write that code)
 			$session->set('newgroups', true);
+		}
+		//check if lockstate changed
+		if ($user['block'] != $new['block']) {
+			$session->set('lockchange', true);
+		}
+		else {
+			$session->set('lockchange', false);
 		}
 		//save hashed password in new session variable
 		$session->set('wowpass', $wowpass); 
@@ -146,7 +153,7 @@ class plgUserWowacc extends JPlugin
 			}		
 			else {
 				//Any changes to email, group or password?   ------ TODO: Check extansion before change
-				if ((empty($wowpass)) && (!$newmail) && (!$newgroups)){
+				if ((empty($wowpass)) && (!$newmail) && (!$newgroups) && (!$session->get('lockchange'))){
 					//no changes made
 					return;
 				}
