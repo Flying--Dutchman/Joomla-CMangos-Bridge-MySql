@@ -19,7 +19,7 @@
 				<field name="credit" type="note" label="Created by Flying Dutchman - OpenSource all the way" />
 				<field name="note1" type="note" label="SQL-Database settings" />
 				<field name="mysql-driver"  type="text" default="mysqli" label="Driver" description="Joomla SQL Driver (mysql, mysqli, mssql...)" />
-				<field name="mysql-host"  type="text" default="localhost" label="Host" description="Hostserver of the Database e.g. localhost, 0.0.0.0, ..." />
+				<field name="mysql-host"  type="text" default="127.0.0.1" label="Host" description="Hostserver of the Database e.g. localhost, 0.0.0.0, ..." />
 				<field name="mysql-user"  type="text" default="root" label="User" description="SQL-User" />
 				<field name="mysql-pass" type="password" default="secret" label="Password" description="SQL-Password" />
 				<field name="mysql-database"  type="text" default="realmd" label="Database" description="Databse of the Server" />
